@@ -37,17 +37,10 @@ app.post("/chat", async (req, res) => {
 
         // ✅ Send request to Gemini API
         const response = await axiosInstance.post(
-            `https://generativelanguage.googleapis.com/v1/models/gemini-1.0-pro-vision-latest:generateContent?key=${GEMINI_API_KEY}`
-,
-{ 
-    contents: [
-      {
-        parts: [{ text: message }]
-      }
-    ] 
-  }
-  
+            `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+            { contents: [{ role: "user", parts: [{ text: message }] }] }
         );
+        
 
         // ✅ Extract response fast
         const reply = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "🤖 No response received.";
