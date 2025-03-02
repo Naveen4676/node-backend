@@ -39,7 +39,14 @@ app.post("/chat", async (req, res) => {
         const response = await axiosInstance.post(
             `https://generativelanguage.googleapis.com/v1/models/gemini-1.0-pro-vision-latest:generateContent?key=${GEMINI_API_KEY}`
 ,
-            { contents: [{ role: "user", parts: [{ text: message }] }] }
+{ 
+    contents: [
+      {
+        parts: [{ text: message }]
+      }
+    ] 
+  }
+  
         );
 
         // ✅ Extract response fast
