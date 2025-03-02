@@ -2,27 +2,20 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
-const compression = require('compression');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Store API Key in .env
 
 app.use(express.json());
 app.use(cors());
-app.use(compression());
 
-// Quick response middleware
-app.use((req, res, next) => {
-    res.setHeader('X-Response-Time', `${Date.now()}ms`);
-    next();
-});
-
-// Simple test route
+// Test Route
 app.get('/', (req, res) => {
     res.send('🚀 AI Chatbot Backend is Running!');
 });
 
-// Chat endpoint
+// Chatbot Endpoint
 app.post('/chat', async (req, res) => {
     try {
         const { message } = req.body;
@@ -30,13 +23,28 @@ app.post('/chat', async (req, res) => {
             return res.status(400).json({ error: 'Message is required' });
         }
 
-        // Fake AI Response (Replace with real API call if needed)
-        res.json({ reply: `🤖 AI: You said - "${message}"` });
+        // OpenAI API Call
+        const response = await axios.post(
+            "https://api.openai.com/v1/chat/completions",
+            {
+                model: "gpt-3.5-turbo",
+                messages: [{ role: "user", content: message }],
+            },
+            {
+                headers: {
+                    "Authorization": `Bearer ${OPENAI_API_KEY}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        res.json({ reply: response.data.choices[0].message.content });
 
     } catch (error) {
-        res.status(500).json({ error: '❌ API request failed!', details: error.message });
+        res.status(500).json({ error: '❌ AI request failed!', details: error.message });
     }
 });
 
-// Start server
+// Start Server
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
