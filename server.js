@@ -37,7 +37,7 @@ app.post("/chat", async (req, res) => {
 
         // ✅ Send request to Gemini API
         const response = await axiosInstance.post(
-            `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
             { contents: [{ role: "user", parts: [{ text: message }] }] }
         );
         
@@ -58,4 +58,5 @@ app.post("/chat", async (req, res) => {
 
 // ✅ Optimize Server for High Performance
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => console.log('🚀 Fast Server running on port ${PORT}'));
